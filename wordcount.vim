@@ -1,13 +1,17 @@
 scriptencoding=utf-8
 
-" .vimrcへの追加部分
+" word-count.vimは現在開いているバッファの文字数をリアルタイムにステータス行へ
+" 表示するプラグインです。
+" 内部的には`g<C-g>`コマンドを利用していますが、改行コードの違いによって文字数
+" が変化してしまう`g<C-g>`と違い、純粋な文字数をカウントすることができます。
+"
+" 以下を.vimrへ追加してください。
 " set statusline+=[wc:%{WordCount()}]
 " set updatetime=500
 
-" 以降は.vimrc等に追加するか、
-" このままpluginフォルダへこのファイルをコピーします。
-" WordCount() のパラメータを変更すると文字数ではなく、
-" 単語数やバイト数を表示可能です。
+" 以降は.vimrc等に追加するか、pluginフォルダへこのファイル自体をコピーします。
+" autocmd で使用されているWordCount('char') のパラメータを変更すると文字数では
+" なく、単語数やバイト数を表示可能です。
 " 文字数は改行を除いた純粋な文字数になります。
 "
 " :call WordCount('char') " count char
@@ -30,7 +34,7 @@ function! WordCount(...)
 
   let s:WordCountStr = ''
   let s:saved_status = v:statusmsg
-  exec "silent normal g\<c-g>"
+  exec "silent normal! g\<c-g>"
   if v:statusmsg !~ '^--'
     let str = ''
     silent! let str = split(v:statusmsg, ';')[cidx]
