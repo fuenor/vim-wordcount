@@ -5,7 +5,7 @@ scriptencoding=utf-8
 " 内部的には`g<C-g>`コマンドを利用していますが、改行コードの違いによって文字数
 " が変化してしまう`g<C-g>`と違い、純粋な文字数をカウントすることができます。
 "
-" 以下を.vimrへ追加してください。
+" 以下を.vimrcへ追加してください。
 " set statusline+=[wc:%{WordCount()}]
 " set updatetime=500
 
