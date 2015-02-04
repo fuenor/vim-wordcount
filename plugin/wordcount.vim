@@ -20,7 +20,7 @@ scriptencoding=utf-8
 
 augroup WordCount
   autocmd!
-  autocmd BufWinEnter,InsertLeave,CursorHold,CursorMoved * call WordCount('char')
+  autocmd BufWinEnter,CursorHold,CursorMoved * call WordCount('char')
 augroup END
 
 let s:WordCountStr = ''
@@ -44,7 +44,7 @@ function! WordCount(...)
   let s:WordCountStr = ''
   let s:saved_status = v:statusmsg
   exec "silent normal! g\<c-g>"
-  if v:statusmsg !~ '^--' 
+  if v:statusmsg !~ '^--'
     let str = ''
     silent! let str = split(v:statusmsg, ';')[cidx]
     let cur = str2nr(matchstr(str,'\s\d\+',0,1))
