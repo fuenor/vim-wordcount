@@ -61,6 +61,8 @@ function! WordCount(...)
       " ノーマルモードの場合は1行目からの行数として改行文字の数を得る
       let cur -= cr * (line('.') - 1)
       let end -= cr * line('$')
+      " 改行をカウントしないので最終行が空行だとオーバーすることがある
+      let cur = cur > end ? end : cur
     elseif a:1 == 'char' && mode() =~ "^[vV]"
       " 選択モード,行選択モードならば，g-<C-g>にある 選択 より改行文字の数を得る
       " 矩形選択ではこの処理はしない
