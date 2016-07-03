@@ -40,7 +40,7 @@ function! WordCount(...)
   let cidx = 3
   " 選択モードと行選択モードの場合はwordcountdictの値を-1することで合わせる
   " 矩形選択モードでこの調整は不要
-  if mode() =~ "^v"
+  if mode() =~ "^[vV]"
     silent! let cidx = s:VisualWordCountDict[a:1]
   else
     silent! let cidx = s:WordCountDict[a:1]
@@ -53,24 +53,26 @@ function! WordCount(...)
   if v:statusmsg !~ '^--'
     let str = ''
     silent! let str = split(v:statusmsg, ';')[cidx]
-    let cur = str2nr(matchstr(str,'\s\d\+',0,1))
-    let end = str2nr(matchstr(str,'\s\d\+',0,2))
+    let cur = str2nr(matchstr(str,'\s\d\+', 0, 1))
+    let end = str2nr(matchstr(str,'\s\d\+', 0, 2))
     " ここで(改行コード数*改行コードサイズ)を'g<C-g>'の文字数から引く
+    let cr = &ff == 'dos' ? 2 : 1
     if a:1 == 'char' && mode() == "n"
       " ノーマルモードの場合は1行目からの行数として改行文字の数を得る
-      let cr = &ff == 'dos' ? 2 : 1
       let cur -= cr * (line('.') - 1)
       let end -= cr * line('$')
-    elseif a:1 == 'char' && mode() =~ "^v"
+    elseif a:1 == 'char' && mode() =~ "^[vV]"
       " 選択モード,行選択モードならば，g-<C-g>にある 選択 より改行文字の数を得る
       " 矩形選択ではこの処理はしない
       silent! let str = split(v:statusmsg, ';')[0]
-      let vcur = str2nr(matchstr(str,'\s\d\+',0,1)) -1
-      let vend = str2nr(matchstr(str,'\s\d\+',0,2)) -1
+      let vcur = str2nr(matchstr(str,'\s\d\+', 0, 1)) -1
+      let vcur += mode() =~ '\CV' ? 1 : 0
+      let vend = str2nr(matchstr(str,'\s\d\+', 0, 2)) -1
       " ここで(改行コード数*改行コードサイズ)を'g<C-g>'の文字数から引く
-      let cr = &ff == 'dos' ? 2 : 1
-      let cur -= cr * vcur
-      let end -= cr * vend
+      let cur -= cr * (vcur)
+      let end -= cr * (vend+1)
+    elseif a:1 == 'char' && mode() =~ "\<C-v>"
+      let end -= cr * line('$')
     endif
     let s:WordCountStr = printf('%d/%d', cur, end)
   endif
