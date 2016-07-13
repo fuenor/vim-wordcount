@@ -114,14 +114,18 @@ nmap <silent> <Plug>(WordCount) :<C-U>call <SID>altcmd('n')<CR>
 vmap <silent> <Plug>(WordCount) :<C-U>call <SID>altcmd('v')<CR>
 
 function! s:altcmd(mode)
+  let s:saved_status = v:statusmsg
+  silent! exe "normal! g\<c-g>"
+  let statusmsg = v:statusmsg
+  let v:statusmsg = s:saved_status
+  if statusmsg =~ '^--'
+    echom statusmsg
+    return
+  endif
   if a:mode =~ 'n'
     doau WordCount CursorHold
     echom s:wc_status
   else
-    let s:saved_status = v:statusmsg
-    silent! exe "normal! g\<c-g>"
-    let statusmsg = v:statusmsg
-    let v:statusmsg = s:saved_status
     let msg = split(statusmsg, ';')
     let cidx = s:VisualWordCountDict[g:wordcount_type]+1
     let str = msg[cidx < len(msg) ? cidx : len(msg)-1]
