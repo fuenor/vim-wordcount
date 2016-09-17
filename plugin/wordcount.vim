@@ -32,10 +32,10 @@ if !exists('wordcount_display')
   let wordcount_display = 'long'
 endif
 
-" また以下を.vimrcに追加するとg<C-g>の文字数を「純粋な文字数」に置き換えます。
-" nmap g<C-g> <Plug>(WordCount)
-" vmap g<C-g> <Plug>(WordCount)
-"
+" g<C-g>の文字数を「純粋な文字数」に置き換えます。
+nmap g<C-g> <Plug>(WordCount)
+vmap g<C-g> <Plug>(WordCount)
+
 augroup WordCount
   autocmd!
   autocmd BufRead,BufEnter,CursorHold * call WordCount(wordcount_type)
