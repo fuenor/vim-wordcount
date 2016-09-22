@@ -108,7 +108,7 @@ function! WordCount(...)
     let s:wc_status = substitute(statusmsg, str, altstr, '')
     let s:WordCountStr = g:wordcount_display == 'long' ? printf('%d/%d', cur, end) : (mode == 'n' ? end : cur)
   endif
-  if mode =~ "^[vV]" && has('gui_running')
+  if mode =~ "^[vV]" && &showcmd
     echo
   endif
   return s:WordCountStr
