@@ -73,10 +73,11 @@ function! WordCount(...)
 
   " g<c-g>の結果をパースする
   let s:WordCountStr = ''
-  let s:saved_status = v:statusmsg
+  let v:statusmsg=''
+  let saved_status = v:statusmsg
   exec "silent normal! g\<c-g>"
   let statusmsg = v:statusmsg
-  let v:statusmsg = s:saved_status
+  let v:statusmsg = saved_status
   if statusmsg !~ '^--'
     let msg = split(statusmsg, ';')
     let str = msg[cidx < len(msg) ? cidx : len(msg)-1]
@@ -107,8 +108,8 @@ function! WordCount(...)
     let s:wc_status = substitute(statusmsg, str, altstr, '')
     let s:WordCountStr = g:wordcount_display == 'long' ? printf('%d/%d', cur, end) : (mode == 'n' ? end : cur)
   endif
-  if mode =~ "^[vV]"
-    echo s:saved_status
+  if mode =~ "^[vV]" && has('gui_running')
+    echo
   endif
   return s:WordCountStr
 endfunction
@@ -117,10 +118,10 @@ nmap <silent> <Plug>(WordCount) :<C-U>call <SID>altcmd('n')<CR>
 vmap <silent> <Plug>(WordCount) :<C-U>call <SID>altcmd('v')<CR>
 
 function! s:altcmd(mode)
-  let s:saved_status = v:statusmsg
+  let saved_status = v:statusmsg
   silent! exe "normal! g\<c-g>"
   let statusmsg = v:statusmsg
-  let v:statusmsg = s:saved_status
+  let v:statusmsg = saved_status
   if statusmsg =~ '^--'
     echom statusmsg
     return
